@@ -22,10 +22,9 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
       title: 'Quiz App',
-      // home: HomePage(),
-      home: HomeView(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

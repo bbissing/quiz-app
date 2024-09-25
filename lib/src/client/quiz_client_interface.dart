@@ -3,9 +3,7 @@ import 'package:quiz_app/src/model/quiz_model.dart';
 
 abstract class QuizClientInterface {
   const QuizClientInterface();
-
   Future<Stream<List<Quiz>>> getQuizzes();
-  // Future<void> saveTodo(Quiz todo);
   Future<void> createQuiz(Quiz quiz);
   Future<void> updateQuiz(Quiz quiz);
   Future<void> deleteQuiz(int id);

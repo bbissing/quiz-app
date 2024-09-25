@@ -17,6 +17,8 @@ class LocalStorageClient extends QuizClientInterface {
 
   late final _quizStreamController = BehaviorSubject<List<Quiz>>.seeded([]);
 
+  Stream<List<Quiz>> get quizStream => _quizStreamController.stream;
+
   @visibleForTesting
   static const kTodosCollectionKey = 'test_key';
 
@@ -26,13 +28,13 @@ class LocalStorageClient extends QuizClientInterface {
   }
 
   void _init() {
-    final todosJson = _getValue(kTodosCollectionKey);
-    if (todosJson != null) {
-      final todos = List<Map<dynamic, dynamic>>.from(
-              jsonDecode(todosJson) as List<dynamic>)
+    final quizJson = _getValue(kTodosCollectionKey);
+    if (quizJson != null) {
+      final quizzes = List<Map<dynamic, dynamic>>.from(
+              jsonDecode(quizJson) as List<dynamic>)
           .map((jsonMap) => Quiz.fromJson(Map<String, dynamic>.from(jsonMap)))
           .toList();
-      _quizStreamController.add(todos);
+      _quizStreamController.add(quizzes);
     } else {
       _quizStreamController.add(const []);
     }
@@ -40,15 +42,18 @@ class LocalStorageClient extends QuizClientInterface {
 
   @override
   Future<Stream<List<Quiz>>> getQuizzes() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
     return _quizStreamController.stream;
   }
 
   @override
   Future<void> createQuiz(Quiz quiz) async {
+    if (_quizStreamController.value.length != 0) {
+      quiz = quiz.copyWith(id: _quizStreamController.value.last.id + 1);
+    }
+
     final quizzes = [..._quizStreamController.value];
     quizzes.add(quiz);
-    _quizStreamController.add(quizzes);
 
     String json = jsonEncode(quizzes.map((quiz) => quiz.toJson()).toList());
     _quizStreamController.add(quizzes);
@@ -65,9 +70,15 @@ class LocalStorageClient extends QuizClientInterface {
 
   @override
   Future<void> deleteQuiz(int id) async {
-    final quizzes = _quizStreamController.value;
-    quizzes.removeWhere((element) => element.id == id);
-    _quizStreamController.add(quizzes);
+    final quizzes = [..._quizStreamController.value];
+    final quizIndex = quizzes.indexWhere((element) => element.id == id);
+    if (quizIndex == -1) {
+      throw QuizNotFoundException();
+    } else {
+      quizzes.removeAt(quizIndex);
+      _quizStreamController.add(quizzes);
+      return _setValue(kTodosCollectionKey, json.encode(quizzes));
+    }
   }
 
   @override
