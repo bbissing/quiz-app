@@ -32,6 +32,7 @@ class EditQuizViewBloc extends Bloc<EditQuizViewEvent, EditQuizViewState> {
     on<EditQuizDelete>(_onDeleteQuiz);
     on<EditQuizAnswerSubmitted>(_onAnswerSubmitted);
     on<EdditQuizCorrectAnswerChanged>(_onCorrectAnswerChanged);
+    on<EditQuizDeleteQuestionOption>(_onDeleteQuestionOption);
   }
 
   final QuizRepository _quizRepository;
@@ -52,6 +53,24 @@ class EditQuizViewBloc extends Bloc<EditQuizViewEvent, EditQuizViewState> {
     emit(state.copyWith(
       description: event.description,
     ));
+  }
+
+  void _onDeleteQuestionOption(
+    EditQuizDeleteQuestionOption event,
+    Emitter<EditQuizViewState> emit,
+  ) {
+    final List<Question> questions = List<Question>.from(state.questions!);
+    final List<String> options =
+        List<String>.from(questions[event.questionIndex].options);
+    options.removeAt(event.optionIndex);
+    var newQuestion =
+        questions[event.questionIndex].copyWith(options: options);
+    emit(state.copyWith(
+        questions: List<Question>.from(state.questions!)
+            .map((question) => question == questions[event.questionIndex]
+                ? newQuestion
+                : question)
+            .toList()));
   }
 
   void _onCorrectAnswerChanged(
@@ -116,8 +135,10 @@ class EditQuizViewBloc extends Bloc<EditQuizViewEvent, EditQuizViewState> {
     Emitter<EditQuizViewState> emit,
   ) {
     final List<Question> questions = List<Question>.from(state.questions!);
-    questions.removeAt(event.index);
-    emit(state.copyWith(questions: questions));
+    emit(state.copyWith(
+        questions: List<Question>.from(state.questions!)
+            .where((question) => question != questions[event.questionIndex])
+            .toList()));
   }
 
   void _onAddQuestionOption(

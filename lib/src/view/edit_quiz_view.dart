@@ -35,6 +35,23 @@ class EditQuizView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Quiz'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.read<EditQuizViewBloc>().add(
+                    EditQuizSubmitted(),
+                  );
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Save',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+          ),
+        ],
         titleTextStyle: TextStyle(
           color: Colors.white,
           fontSize: 24,
@@ -152,17 +169,7 @@ class EditQuizView extends StatelessWidget {
                     ],
                   ),
                 ),
-                ElevatedButton(
-                      onPressed: () {
-                        context.read<EditQuizViewBloc>().add(
-                              EditQuizSubmitted(),
-                            );
-                        Navigator.of(context).pop();
-                      },
-                      child: state.isNewQuiz
-                          ? const Text('Create Quiz')
-                          : const Text('Save Quiz'),
-                    ),
+
                     const SizedBox(height: 16),
                     if (!state.isNewQuiz)
                       ElevatedButton(
@@ -172,7 +179,15 @@ class EditQuizView extends StatelessWidget {
                               );
                           Navigator.of(context).pop();
                         },
-                        child: const Text('Delete Quiz'),
+                        child: const Text(
+                          'Delete Quiz',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 134, 24, 16),
+                        ),
                       ),
                     const SizedBox(height: 16),
               ],
@@ -271,13 +286,31 @@ class _ExisitingQuiz extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      state.questions![i].options[j],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            state.questions![i].options[j],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          color: Colors.white,
+                          onPressed: () {
+                            context.read<EditQuizViewBloc>().add(
+                                  EditQuizDeleteQuestionOption(
+                                    questionIndex: i,
+                                    optionIndex: j,
+                                  ),
+                                );
+                          },
+                        ),
+                      ],
                     ),
                     TextField(
                       style: const TextStyle(
@@ -316,6 +349,23 @@ class _ExisitingQuiz extends StatelessWidget {
                       );
                 },
                 child: const Text('Add Option'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<EditQuizViewBloc>().add(
+                        EditQuizDeleteQuestion(questionIndex: i),
+                      );
+                },
+                child: Text(
+                  'Delete Question',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:  Colors.red,
+                ),
               ),
               const SizedBox(height: 16),
             ],

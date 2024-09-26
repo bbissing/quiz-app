@@ -71,13 +71,12 @@ class EditQuizQuestionChanged extends EditQuizViewEvent {
 }
 
 class EditQuizDeleteQuestion extends EditQuizViewEvent {
-  const EditQuizDeleteQuestion(this.quiz, this.index);
+  const EditQuizDeleteQuestion({required this.questionIndex});
 
-  final Quiz quiz;
-  final int index;
+  final int questionIndex;
 
   @override
-  List<Object> get props => [quiz, index];
+  List<Object> get props => [questionIndex];
 }
 
 class EditQuizAddQuestionOption extends EditQuizViewEvent {
@@ -117,3 +116,15 @@ class EditQuizAnswerSubmitted extends EditQuizViewEvent {
   @override
   List<Object> get props => [quiz, index, optionIndex, option];
 }
+
+class EditQuizDeleteQuestionOption extends EditQuizViewEvent {
+  const EditQuizDeleteQuestionOption(
+      {required this.questionIndex, required this.optionIndex});
+
+  final int questionIndex;
+  final int optionIndex;
+
+  @override
+  List<Object> get props => [questionIndex, optionIndex];
+}
+

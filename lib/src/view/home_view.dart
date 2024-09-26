@@ -119,18 +119,31 @@ class HomeView extends StatelessWidget {
                   child: ListTile(
                     title: Text(state.quizzes[index].title),
                     subtitle: Text(state.quizzes[index].description),
-                    trailing: Icon(Icons.arrow_forward_ios),
+                    trailing:
+                        IconButton(
+                          iconSize: 36,
+                          icon: Icon(Icons.arrow_circle_right_outlined),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => QuizView(
+                                  quiz: state.quizzes[index],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                     minTileHeight: 20,
+                    // onTap: () {
+                    //   Navigator.of(context).push(
+                    //       MaterialPageRoute(
+                    //         builder: (context) => QuizView(
+                    //           quiz: state.quizzes[index],
+                    //         ),
+                    //       ),
+                    //     );
+                    // },
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => QuizView(
-                              quiz: state.quizzes[index],
-                            ),
-                          ),
-                        );
-                    },
-                    onLongPress: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => EditQuizPage(
@@ -139,6 +152,15 @@ class HomeView extends StatelessWidget {
                         ),
                       );
                     },
+                    // onLongPress: () {
+                    //   Navigator.of(context).push(
+                    //     MaterialPageRoute(
+                    //       builder: (context) => EditQuizPage(
+                    //         quiz: state.quizzes[index],
+                    //       ),
+                    //     ),
+                    //   );
+                    // },
                   ),
                 );
               },
