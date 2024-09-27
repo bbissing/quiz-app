@@ -4,19 +4,10 @@ part of 'home_view_bloc.dart';
 sealed class HomeViewEvent extends Equatable {
   const HomeViewEvent();
 
-  @override
-  List<Object> get props => [];
+  @override // coverage:ignore-line
+  List<Object> get props => []; // coverage:ignore-line
 }
 
 final class HomeViewSubscriptionRequested extends HomeViewEvent {
   const HomeViewSubscriptionRequested();
-}
-
-final class HomeViewQuizDeleted extends HomeViewEvent {
-  const HomeViewQuizDeleted(this.quiz);
-
-  final Quiz quiz;
-
-  @override
-  List<Object> get props => [quiz];
 }

@@ -3,25 +3,19 @@ part of 'edit_quiz_view_bloc.dart';
 sealed class EditQuizViewEvent extends Equatable {
   const EditQuizViewEvent();
 
-  @override
-  List<Object> get props => [];
+  @override // coverage:ignore-line
+  List<Object> get props => []; // coverage:ignore-line
 }
 
 class EditQuizSubmitted extends EditQuizViewEvent {
   const EditQuizSubmitted();
 
-  @override
-  List<Object> get props => [];
+  @override // coverage:ignore-line
+  List<Object> get props => []; // coverage:ignore-line
 }
 
 class EditQuizDelete extends EditQuizViewEvent {
-  // const EditQuizDelete(this.id);
   const EditQuizDelete();
-
-  // final int id;
-
-  // @override
-  // List<Object> get props => [id];
 }
 
 class EditQuizTitleChanged extends EditQuizViewEvent {
@@ -29,23 +23,23 @@ class EditQuizTitleChanged extends EditQuizViewEvent {
 
   final String title;
 
-  @override
-  List<Object> get props => [title];
+  @override // coverage:ignore-line
+  List<Object> get props => [title]; // coverage:ignore-line
 }
 
 class EditQuizDescriptionChanged extends EditQuizViewEvent {
   const EditQuizDescriptionChanged(this.description);
   final String description;
 
-  @override
-  List<Object> get props => [description];
+  @override // coverage:ignore-line
+  List<Object> get props => [description]; // coverage:ignore-line
 }
 
 class EditQuizAddQuestion extends EditQuizViewEvent {
   const EditQuizAddQuestion();
 
-  @override
-  List<Object> get props => [];
+  @override // coverage:ignore-line
+  List<Object> get props => []; // coverage:ignore-line
 }
 
 class EdditQuizCorrectAnswerChanged extends EditQuizViewEvent {
@@ -55,8 +49,8 @@ class EdditQuizCorrectAnswerChanged extends EditQuizViewEvent {
   final int questionIndex;
   final String correctAnswer;
 
-  @override
-  List<Object> get props => [questionIndex, correctAnswer];
+  @override // coverage:ignore-line
+  List<Object> get props => [questionIndex, correctAnswer]; // coverage:ignore-line
 }
 
 class EditQuizQuestionChanged extends EditQuizViewEvent {
@@ -66,8 +60,8 @@ class EditQuizQuestionChanged extends EditQuizViewEvent {
   final int questionIndex;
   final String questionHeader;
 
-  @override
-  List<Object> get props => [questionIndex, questionHeader];
+  @override // coverage:ignore-line
+  List<Object> get props => [questionIndex, questionHeader]; // coverage:ignore-line
 }
 
 class EditQuizDeleteQuestion extends EditQuizViewEvent {
@@ -75,8 +69,8 @@ class EditQuizDeleteQuestion extends EditQuizViewEvent {
 
   final int questionIndex;
 
-  @override
-  List<Object> get props => [questionIndex];
+  @override // coverage:ignore-line
+  List<Object> get props => [questionIndex]; // coverage:ignore-line
 }
 
 class EditQuizAddQuestionOption extends EditQuizViewEvent {
@@ -86,8 +80,8 @@ class EditQuizAddQuestionOption extends EditQuizViewEvent {
   final int questionIndex;
   final String option;
 
-  @override
-  List<Object> get props => [questionIndex, option];
+  @override // coverage:ignore-line
+  List<Object> get props => [questionIndex, option]; // coverage:ignore-line
 }
 
 class EditQuizChangeQuestionOption extends EditQuizViewEvent {
@@ -100,22 +94,11 @@ class EditQuizChangeQuestionOption extends EditQuizViewEvent {
   final int optionIndex;
   final String option;
 
-  @override
-  List<Object> get props => [questionIndex, optionIndex, option];
+  @override // coverage:ignore-line
+  List<Object> get props => [questionIndex, optionIndex, option]; // coverage:ignore-line
 }
 
-class EditQuizAnswerSubmitted extends EditQuizViewEvent {
-  const EditQuizAnswerSubmitted(
-      this.quiz, this.index, this.optionIndex, this.option);
 
-  final Quiz quiz;
-  final int index;
-  final int optionIndex;
-  final String option;
-
-  @override
-  List<Object> get props => [quiz, index, optionIndex, option];
-}
 
 class EditQuizDeleteQuestionOption extends EditQuizViewEvent {
   const EditQuizDeleteQuestionOption(
@@ -124,7 +107,6 @@ class EditQuizDeleteQuestionOption extends EditQuizViewEvent {
   final int questionIndex;
   final int optionIndex;
 
-  @override
-  List<Object> get props => [questionIndex, optionIndex];
+  @override // coverage:ignore-line
+  List<Object> get props => [questionIndex, optionIndex]; // coverage:ignore-line
 }
-

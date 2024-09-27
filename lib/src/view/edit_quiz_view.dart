@@ -156,21 +156,21 @@ class EditQuizView extends StatelessWidget {
                       _ExisitingQuiz(
                         state: state,
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          context.read<EditQuizViewBloc>().add(
-                                EditQuizAddQuestion(),
-                              );
-                        },
-                        child: const Text('Add Question'),
-                      ),
-                      const SizedBox(height: 16),
 
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
 
                     const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<EditQuizViewBloc>().add(
+                              EditQuizAddQuestion(),
+                            );
+                      },
+                      child: const Text('Add Question'),
+                    ),
                     if (!state.isNewQuiz)
                       ElevatedButton(
                         onPressed: () {
@@ -286,19 +286,45 @@ class _ExisitingQuiz extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      '${state.questions![i].options[j]}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            state.questions![i].options[j],
-                            style: TextStyle(
+                          child: TextField(
+                            style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
                             ),
+                            onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                            decoration: InputDecoration(
+                              labelText: 'Option ${j + 1}',
+                              hintText: 'Enter option',
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                              labelStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                            onChanged: (option) {
+                              context.read<EditQuizViewBloc>().add(
+                                    EditQuizChangeQuestionOption(
+                                      questionIndex: i,
+                                      optionIndex: j,
+                                      option: option,
+                                    ),
+                                  );
+                            },
                           ),
                         ),
-                        IconButton(
+                    IconButton(
                           icon: const Icon(Icons.delete),
                           color: Colors.white,
                           onPressed: () {
@@ -311,32 +337,6 @@ class _ExisitingQuiz extends StatelessWidget {
                           },
                         ),
                       ],
-                    ),
-                    TextField(
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                      onTapOutside: (event) => FocusScope.of(context).unfocus(),
-                      decoration: InputDecoration(
-                        labelText: 'Option ${j + 1}',
-                        hintText: 'Enter option',
-                        hintStyle: TextStyle(
-                          color: Colors.white,
-                        ),
-                        labelStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                      onChanged: (option) {
-                        context.read<EditQuizViewBloc>().add(
-                              EditQuizChangeQuestionOption(
-                                questionIndex: i,
-                                optionIndex: j,
-                                option: option,
-                              ),
-                            );
-                      },
                     ),
                     const SizedBox(height: 16),
                   ],

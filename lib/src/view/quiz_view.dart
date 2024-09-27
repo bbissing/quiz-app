@@ -99,7 +99,6 @@ class QuizView extends StatelessWidget {
                                               onChanged: (value) {
                                                 context.read<QuizViewBloc>().add(
                                                   QuizViewSelectOption(
-                                                    question: question,
                                                     selectedOption: value as String,
                                                     questionIndex: index
                                                   ),

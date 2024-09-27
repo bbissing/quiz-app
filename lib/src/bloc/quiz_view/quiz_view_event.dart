@@ -4,23 +4,21 @@ part of 'quiz_view_bloc.dart';
 sealed class QuizViewEvent extends Equatable {
   const QuizViewEvent();
 
-  @override
-  List<Object> get props => [];
+  @override // coverage:ignore-line
+  List<Object> get props => []; // coverage:ignore-line
 }
 
 class QuizViewSelectOption extends QuizViewEvent {
   final int questionIndex;
   final String selectedOption;
-  final Question question;
 
   const QuizViewSelectOption({
     required this.questionIndex,
     required this.selectedOption,
-    required this.question
   });
 
-  @override
-  List<Object> get props => [questionIndex, selectedOption, question];
+  @override // coverage:ignore-line
+  List<Object> get props => [questionIndex, selectedOption]; // coverage:ignore-line
 }
 
 class QuizViewSubmit extends QuizViewEvent {

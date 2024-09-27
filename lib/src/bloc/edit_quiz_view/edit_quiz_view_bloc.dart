@@ -30,7 +30,6 @@ class EditQuizViewBloc extends Bloc<EditQuizViewEvent, EditQuizViewState> {
     on<EditQuizChangeQuestionOption>(_onChangeQuestionOption);
     on<EditQuizSubmitted>(_onQuizSubmitted);
     on<EditQuizDelete>(_onDeleteQuiz);
-    on<EditQuizAnswerSubmitted>(_onAnswerSubmitted);
     on<EdditQuizCorrectAnswerChanged>(_onCorrectAnswerChanged);
     on<EditQuizDeleteQuestionOption>(_onDeleteQuestionOption);
   }
@@ -95,8 +94,8 @@ class EditQuizViewBloc extends Bloc<EditQuizViewEvent, EditQuizViewState> {
       final Question question = Question(
         question: 'Question ${state.questions!.length + 1}',
         options: [
-          'Option 1',
-          'Option 2',
+          'Option',
+          'Option',
         ],
         correctAnswer: '',
       );
@@ -234,14 +233,5 @@ class EditQuizViewBloc extends Bloc<EditQuizViewEvent, EditQuizViewState> {
     } catch (e) {
       emit(state.copyWith(status: EditQuizViewStatus.failure));
     }
-  }
-
-  Future<void> _onAnswerSubmitted(
-    EditQuizAnswerSubmitted event,
-    Emitter<EditQuizViewState> emit,
-  ) async {
-    Question question = state.questions![event.index];
-    final String selectedAnswer = question.options[event.optionIndex];
-    question = question.copyWith(selectedAnswer: selectedAnswer);
   }
 }

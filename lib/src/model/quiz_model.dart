@@ -25,7 +25,7 @@ class Quiz {
   }
 
   Quiz.empty() : this(id: 0, title: '', description: '', questions: [
-    Question(question: 'Question 1', options: ['Option 1', 'Option 2'], correctAnswer: ''),
+    Question(question: '', options: ['', ''], correctAnswer: ''),
   ],);
 
   Map<String, dynamic> toJson() {

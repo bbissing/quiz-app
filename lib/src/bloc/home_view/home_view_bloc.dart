@@ -10,10 +10,9 @@ part 'home_view_state.dart';
 class HomeViewBloc extends Bloc<HomeViewEvent, HomeViewState> {
   HomeViewBloc({
     required QuizRepository quizRepository,
-  }) : _quizRepository = quizRepository,
-    super(const HomeViewState()) {
+  })  : _quizRepository = quizRepository,
+        super(const HomeViewState()) {
     on<HomeViewSubscriptionRequested>(_onSubscriptionRequested);
-    on<HomeViewQuizDeleted>(_onQuizDeleted);
   }
 
   final QuizRepository _quizRepository;
@@ -23,24 +22,14 @@ class HomeViewBloc extends Bloc<HomeViewEvent, HomeViewState> {
     Emitter<HomeViewState> emit,
   ) async {
     emit(state.copyWith(status: HomeViewStatus.loading));
-    await emit.forEach<List<Quiz>>(
-      await _quizRepository.getQuizzes(),
-      onData: (quizzes) => state.copyWith(
-        status: HomeViewStatus.success,
-        quizzes: quizzes,
-      ),
-      onError: (error, stacktrace) => state.copyWith(
-        status: HomeViewStatus.failure,
-      ),
+    await emit.forEach<List<Quiz>>(await _quizRepository.getQuizzes(),
+        onData: (quizzes) => state.copyWith(
+              status: HomeViewStatus.success,
+              quizzes: quizzes,
+            ),
+        onError: (error, stacktrace) => state.copyWith(
+              status: HomeViewStatus.failure,
+            )
     );
   }
-
-  Future<void> _onQuizDeleted(
-    HomeViewQuizDeleted event,
-    Emitter<HomeViewState> emit,
-  ) async {
-    emit(state.copyWith(lastDeletedQuiz: event.quiz));
-    await _quizRepository.deleteQuiz(event.quiz.id);
-  }
 }
-
