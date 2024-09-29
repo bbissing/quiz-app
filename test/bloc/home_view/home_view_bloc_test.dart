@@ -7,20 +7,19 @@ import 'package:quiz_app/src/repository/quiz_repository.dart';
 class MockQuizRepository extends Mock implements QuizRepository {}
 
 void main() {
-  group('HomeViewBloc initalized', () {
-    late HomeViewBloc homeViewBloc;
-    late QuizRepository quizRepository;
+  late HomeViewBloc homeViewBloc;
+  late QuizRepository quizRepository;
 
+  setUpAll(() {
+    quizRepository = MockQuizRepository();
+  });
+
+  group('HomeViewBloc initalized', () {
     setUp(() {
-      print('inside setUp');
-      quizRepository = MockQuizRepository();
       homeViewBloc = HomeViewBloc(
         quizRepository: quizRepository,
       );
     });
-
-    print('after setUp');
-
     test('- initial state is HomeViewState', () {
       expect(homeViewBloc.state, const HomeViewState());
       expect(homeViewBloc.state.status, HomeViewStatus.initial);
@@ -33,33 +32,16 @@ void main() {
       build: () => homeViewBloc,
       expect: () => const <HomeViewState>[],
     );
-
-    tearDown(() {
-      homeViewBloc.close();
-    });
   });
 
-  group('HomeViewSubscriptionRequested event added to HomeViewBloc', () {
-    // late MockQuizRepository quizRepository;
-    // late HomeViewBloc homeViewBloc;
-
-    // setUp(() {
-    //   quizRepository = MockQuizRepository();
-    //   homeViewBloc = HomeViewBloc(
-    //     quizRepository: quizRepository,
-    //   );
-    // });
-    final quizRepository = MockQuizRepository();
-    final homeViewBloc = HomeViewBloc(
-      quizRepository: quizRepository,
-    );
-
-    when(() => quizRepository.getQuizzes())
-        .thenAnswer((_) async => Stream.fromIterable([[]]));
-
+  group('HomeViewSubscriptionRequested event added to HomeViewBloc - emits HomeViewStatus.success, zero quizzes', () {
     blocTest<HomeViewBloc, HomeViewState>(
       'emits [HomeViewState(status: HomeViewStatus.loading), HomeViewState(status: HomeViewStatus.success, quizzes: [])] when HomeViewSubscriptionRequested is added',
-      build: () => homeViewBloc,
+      build: () => HomeViewBloc(quizRepository: quizRepository),
+      setUp: () {
+        when(() => quizRepository.getQuizzes())
+            .thenAnswer((_) async => Stream.fromIterable([[]]));
+      },
       act: (bloc) => bloc.add(HomeViewSubscriptionRequested()),
       expect: () => const <HomeViewState>[
         HomeViewState(status: HomeViewStatus.loading),
@@ -71,17 +53,14 @@ void main() {
     );
   });
 
-  group('HomeViewBloc with quizRepository', () {
-    final quizRepository = MockQuizRepository();
-    final homeViewBloc = HomeViewBloc(
-      quizRepository: quizRepository,
-    );
-
-    when(() => quizRepository.getQuizzes()).thenAnswer((_) async => Stream.error(Exception('error')));
-
+  group('HomeViewSubscriptionRequested event added to HomeViewBloc - emits HomeViewStatus.failure', () {
     blocTest<HomeViewBloc, HomeViewState>(
       'emits [HomeViewState(status: HomeViewStatus.loading), HomeViewState(status: HomeViewStatus.failure)] when HomeViewSubscriptionRequested is added',
-      build: () => homeViewBloc,
+      build: () => HomeViewBloc(quizRepository: quizRepository),
+      setUp: () {
+        when(() => quizRepository.getQuizzes())
+            .thenAnswer((_) async => Stream.error(Exception('error')));
+      },
       act: (bloc) => bloc.add(HomeViewSubscriptionRequested()),
       expect: () => const <HomeViewState>[
         HomeViewState(status: HomeViewStatus.loading),

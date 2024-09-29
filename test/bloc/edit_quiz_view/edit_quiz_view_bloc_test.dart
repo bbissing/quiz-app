@@ -12,13 +12,13 @@ void main() {
   setUpAll(() {
     registerFallbackValue(Quiz(
       id: 1,
-      title: 'Mock Quiz',
-      description: 'A mock quiz for testing',
+      title: '',
+      description: '',
       questions: [
         Question(
-          question: 'Mock Question',
-          options: ['Option 1', 'Option 2'],
-          correctAnswer: 'Option 1',
+          question: '',
+          options: [''],
+          correctAnswer: '',
         ),
       ],
     ));
@@ -96,24 +96,56 @@ void main() {
       ],
     );
 
-    blocTest<EditQuizViewBloc, EditQuizViewState>(
-      'emits success state when EditQuizSubmitted is added for existing quiz',
-      build: buildBloc,
-      act: (bloc) => bloc.add(const EditQuizSubmitted()),
-      setUp: () {
-        // var bloc = buildBloc();
-        when(() => quizRepository.updateQuiz(any())).thenAnswer((_) async => mockQuiz);
-      },
-      expect: () => [
-        isA<EditQuizViewState>().having(
-            (state) => state.status, 'status', EditQuizViewStatus.loading),
-        isA<EditQuizViewState>().having(
-            (state) => state.status, 'status', EditQuizViewStatus.success),
-      ],
-      verify: (_) {
-        verify(() => quizRepository.updateQuiz(any())).called(1);
-      },
-    );
+  blocTest<EditQuizViewBloc, EditQuizViewState>(
+        'emits success state when EditQuizSubmitted is added for existing quiz',
+        build: buildBloc,
+        act: (bloc) {
+          bloc.add(const EditQuizTitleChanged('New Title'));
+          bloc.add(const EditQuizDescriptionChanged('New Description'));
+          bloc.add(const EditQuizChangeQuestionOption(
+              questionIndex: 0, optionIndex: 0, option: 'New Option'));
+          bloc.add(const EditQuizSubmitted());
+        },
+        setUp: () {
+          // when(() => quizRepository.updateQuiz(any())).thenAnswer((_) async => mockQuiz);
+          when(() => quizRepository.updateQuiz(any())).thenAnswer((_) async => null);
+        },
+        expect: () => [
+          isA<EditQuizViewState>()
+            .having((state) => state.status, 'status', EditQuizViewStatus.initial)
+            .having((state) => state.title, 'title', 'New Title')
+            .having((state) => state.description, 'description', 'A mock quiz for testing')
+            .having((state) => state.questions, 'questions', mockQuiz.questions)
+            .having((state) => state.isNewQuiz, 'isNewQuiz', false),
+          isA<EditQuizViewState>()
+            .having((state) => state.status, 'status', EditQuizViewStatus.initial)
+            .having((state) => state.title, 'title', 'New Title')
+            .having((state) => state.description, 'description', 'New Description')
+            .having((state) => state.questions, 'questions', mockQuiz.questions)
+            .having((state) => state.isNewQuiz, 'isNewQuiz', false),
+          isA<EditQuizViewState>()
+            .having((state) => state.status, 'status', EditQuizViewStatus.initial)
+            .having((state) => state.title, 'title', 'New Title')
+            .having((state) => state.description, 'description', 'New Description')
+            .having((state) => state.questions![0].options[0], 'option', 'New Option')
+            .having((state) => state.isNewQuiz, 'isNewQuiz', false),
+          isA<EditQuizViewState>()
+            .having((state) => state.status, 'status', EditQuizViewStatus.loading)
+            .having((state) => state.title, 'title', 'New Title')
+            .having((state) => state.description, 'description', 'New Description')
+            .having((state) => state.questions![0].options[0], 'option', 'New Option')
+            .having((state) => state.isNewQuiz, 'isNewQuiz', false),
+          isA<EditQuizViewState>()
+            .having((state) => state.description, 'description', 'New Description')
+            .having((state) => state.title, 'title', 'New Title')
+            .having((state) => state.questions![0].options[0], 'option', 'New Option')
+            .having((state) => state.status, 'status', EditQuizViewStatus.success)
+            .having((state) => state.isNewQuiz, 'isNewQuiz', false),
+        ],
+        verify: (_) {
+          verify(() => quizRepository.updateQuiz(any())).called(1);
+        },
+      );
 
     blocTest<EditQuizViewBloc, EditQuizViewState>(
       'emits failure state when EditQuizSubmitted fails',
@@ -134,7 +166,8 @@ void main() {
     blocTest<EditQuizViewBloc, EditQuizViewState>(
       'emits success state when EditQuizSubmitted is added for new quiz',
       build: () {
-        when(() => quizRepository.createQuiz(any())).thenAnswer((_) async => mockQuiz);
+        when(() => quizRepository.createQuiz(any()))
+            .thenAnswer((_) async => mockQuiz);
         return EditQuizViewBloc(
           quizRepository: quizRepository,
           quiz: mockQuiz,
@@ -232,10 +265,11 @@ void main() {
     blocTest<EditQuizViewBloc, EditQuizViewState>(
       'emits new state with updated option when EditQuizOptionChanged is added',
       build: buildBloc,
-      act: (bloc) => bloc.add(const EditQuizChangeQuestionOption(questionIndex: 0, optionIndex: 0, option: 'New Option')),
+      act: (bloc) => bloc.add(const EditQuizChangeQuestionOption(
+          questionIndex: 0, optionIndex: 0, option: 'New Option')),
       expect: () => [
-        isA<EditQuizViewState>()
-            .having((state) => state.questions![0].options[0], 'option', 'New Option'),
+        isA<EditQuizViewState>().having(
+            (state) => state.questions![0].options[0], 'option', 'New Option'),
       ],
     );
 
@@ -244,38 +278,47 @@ void main() {
       build: buildBloc,
       act: (bloc) => bloc.add(const EditQuizDeleteQuestion(questionIndex: 0)),
       expect: () => [
-        isA<EditQuizViewState>()
-            .having((state) => state.questions!.length, 'questions length', mockQuiz.questions.length - 1),
+        isA<EditQuizViewState>().having((state) => state.questions!.length,
+            'questions length', mockQuiz.questions.length - 1),
       ],
     );
 
     blocTest<EditQuizViewBloc, EditQuizViewState>(
       'emits new state with updated option when EditQuizDeleteQuestionOption is added',
       build: buildBloc,
-      act: (bloc) => bloc.add(const EditQuizDeleteQuestionOption(questionIndex: 0, optionIndex: 0)),
+      act: (bloc) => bloc.add(
+          const EditQuizDeleteQuestionOption(questionIndex: 0, optionIndex: 0)),
       expect: () => [
-        isA<EditQuizViewState>()
-            .having((state) => state.questions![0].options.length, 'options length', mockQuiz.questions[0].options.length - 1),
+        isA<EditQuizViewState>().having(
+            (state) => state.questions![0].options.length,
+            'options length',
+            mockQuiz.questions[0].options.length - 1),
       ],
     );
 
     blocTest<EditQuizViewBloc, EditQuizViewState>(
       'emits new state with updated correct answer when EdditQuizCorrectAnswerChanged is added',
       build: buildBloc,
-      act: (bloc) => bloc.add(const EdditQuizCorrectAnswerChanged(questionIndex: 0, correctAnswer: 'New Correct Answer')),
+      act: (bloc) => bloc.add(const EdditQuizCorrectAnswerChanged(
+          questionIndex: 0, correctAnswer: 'New Correct Answer')),
       expect: () => [
-        isA<EditQuizViewState>()
-            .having((state) => state.questions![0].correctAnswer, 'correct answer', 'New Correct Answer'),
+        isA<EditQuizViewState>().having(
+            (state) => state.questions![0].correctAnswer,
+            'correct answer',
+            'New Correct Answer'),
       ],
     );
 
     blocTest<EditQuizViewBloc, EditQuizViewState>(
       'emits new state with updated option when EditQuizAddQuestionOption is added',
       build: buildBloc,
-      act: (bloc) => bloc.add(const EditQuizAddQuestionOption(questionIndex: 0, option: 'New Option')),
+      act: (bloc) => bloc.add(const EditQuizAddQuestionOption(
+          questionIndex: 0, option: 'New Option')),
       expect: () => [
-        isA<EditQuizViewState>()
-            .having((state) => state.questions![0].options.length, 'options length', mockQuiz.questions[0].options.length + 1),
+        isA<EditQuizViewState>().having(
+            (state) => state.questions![0].options.length,
+            'options length',
+            mockQuiz.questions[0].options.length + 1),
       ],
     );
   });

@@ -8,11 +8,9 @@ import 'package:quiz_app/src/model/quiz_model.dart';
 class MockQuiz extends Mock implements Quiz {}
 
 void main() {
-  group('QuizViewBloc', () {
-    late Quiz quiz;
-    late List<Question> questions;
-
-    setUp(() {
+  late Quiz quiz;
+  late List<Question> questions;
+  setUpAll(() {
       quiz = MockQuiz();
       questions = [
         Question(
@@ -27,8 +25,8 @@ void main() {
         ),
       ];
       when(() => quiz.questions).thenReturn(questions);
-    });
-
+  });
+  group('QuizViewBloc', () {
     blocTest<QuizViewBloc, QuizViewState>(
       'emits correct state when QuizViewSelectOption is added',
       build: () => QuizViewBloc(quiz: quiz),
@@ -54,6 +52,9 @@ void main() {
         incorrectAnswers: const [],
         testSubmitted: false,
       ),
+      setUp: () {
+        when(() => quiz.questions).thenReturn(questions);
+      },
       act: (bloc) => bloc.add(const QuizViewSubmit()),
       expect: () => [
         QuizViewState(
