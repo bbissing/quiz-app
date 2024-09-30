@@ -35,12 +35,12 @@ void main() {
       localStorageClient = LocalStorageClient(plugin: sharedPreferences);
     });
 
-    test('getQuizzes', () {
+    test('getQuizzes', () async {
 
       expect(
           localStorageClient.getQuizzes(), isA<Future<Stream<List<Quiz>>>>());
 
-      localStorageClient.quizStream.listen(
+      await localStorageClient.quizStream.listen(
         expectAsync1((quizzes) {
           expect(quizzes.length, 0);
         }, count: 1),
@@ -60,8 +60,8 @@ void main() {
       );
     });
 
-    test('createQuiz', () {
-      expect(localStorageClient.createQuiz(quiz), isA<Future<void>>());
+    test('createQuiz', () async {
+      await localStorageClient.createQuiz(quiz);
       localStorageClient.quizStream.listen(
         expectAsync1((quizzes) {
           expect(quizzes.length, 2);
@@ -70,9 +70,9 @@ void main() {
       );
     });
 
-    test('updateQuiz', () {
+    test('updateQuiz', () async {
       final updatedQuiz = quiz.copyWith(title: 'Updated Quiz');
-      localStorageClient.updateQuiz(updatedQuiz);
+      await localStorageClient.updateQuiz(updatedQuiz);
       localStorageClient.quizStream.listen(
         expectAsync1((quizzes) {
           expect(quizzes.length, 2);
@@ -81,8 +81,8 @@ void main() {
       );
     });
 
-    test('deleteQuiz', () {
-      localStorageClient.deleteQuiz(0);
+    test('deleteQuiz', () async {
+      await localStorageClient.deleteQuiz(0);
       localStorageClient.quizStream.listen(
         expectAsync1((quizzes) {
           expect(quizzes.length, 1);

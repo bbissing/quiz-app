@@ -24,9 +24,8 @@ class LocalStorageClient extends QuizClientInterface {
 
   String? _getValue(String key) => _plugin.getString(key);
 
-  Future<void> _setValue(String key, String value) {
-    var result = _plugin.setString(key, value);
-    return result;
+  void _setValue(String key, String value) {
+    _plugin.setString(key, value);
   }
 
   void _init() {
@@ -58,14 +57,23 @@ class LocalStorageClient extends QuizClientInterface {
     quizzes.add(quiz);
 
     String json = jsonEncode(quizzes.map((quiz) => quiz.toJson()).toList());
+
+    await Future.delayed(const Duration(seconds: 1));
     _quizStreamController.add(quizzes);
-    return _setValue(kTodosCollectionKey, json);
+    _setValue(kTodosCollectionKey, json);
   }
 
   @override
   Future<void> updateQuiz(Quiz quiz) async {
     final quizzes = _quizStreamController.value;
+
+    await Future.delayed(const Duration(seconds: 1));
     final index = quizzes.indexWhere((element) => element.id == quiz.id);
+
+    if (index == -1) {
+      throw QuizNotFoundException();
+    }
+
     quizzes[index] = quiz;
     _quizStreamController.add(quizzes);
   }
@@ -73,13 +81,15 @@ class LocalStorageClient extends QuizClientInterface {
   @override
   Future<void> deleteQuiz(int id) async {
     final quizzes = [..._quizStreamController.value];
+
+    await Future.delayed(const Duration(seconds: 1));
     final quizIndex = quizzes.indexWhere((element) => element.id == id);
     if (quizIndex == -1) {
       throw QuizNotFoundException();
     } else {
       quizzes.removeAt(quizIndex);
       _quizStreamController.add(quizzes);
-      return _setValue(kTodosCollectionKey, json.encode(quizzes));
+      _setValue(kTodosCollectionKey, json.encode(quizzes));
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:quiz_app/src/client/local_storage_client.dart';
+import 'package:quiz_app/src/client/quiz_client_interface.dart';
 import 'package:quiz_app/src/model/quiz_model.dart';
 
 class QuizRepository {
@@ -9,18 +10,34 @@ class QuizRepository {
   final LocalStorageClient _quizApi;
 
   Future<Stream<List<Quiz>>> getQuizzes() async {
-    return _quizApi.getQuizzes();
+    try {
+      return _quizApi.getQuizzes();
+    } catch (e) {
+      throw Exception('Failed to get quizzes');
+    }
   }
 
   Future<void> createQuiz(Quiz quiz) async {
-    await _quizApi.createQuiz(quiz);
+    try {
+      return _quizApi.createQuiz(quiz);
+    } catch (e) {
+      throw Exception('Failed to create quiz');
+    }
   }
 
   Future<void> updateQuiz(Quiz quiz) async {
-    return _quizApi.updateQuiz(quiz);
+    try {
+      return _quizApi.updateQuiz(quiz);
+    } catch (e, s) {
+      Error.throwWithStackTrace(QuizNotFoundException(e.toString()), s);
+    }
   }
 
   Future<void> deleteQuiz(int id) async {
-    return _quizApi.deleteQuiz(id);
+    try {
+      return _quizApi.deleteQuiz(id);
+    } catch (e, s) {
+      Error.throwWithStackTrace(QuizNotFoundException(e.toString()), s);
+    }
   }
 }

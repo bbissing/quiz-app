@@ -11,4 +11,10 @@ abstract class QuizClientInterface {
 }
 
 /// Error thrown when a [Quiz] with a given id is not found.
-class QuizNotFoundException implements Exception {}
+class QuizNotFoundException implements Exception {
+  const QuizNotFoundException(
+      [this.message = 'Quiz not found. Please check the id and try again.']);
+
+
+  final String message;
+}
