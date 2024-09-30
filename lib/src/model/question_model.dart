@@ -16,7 +16,7 @@ class Question {
       question: json['question'] as String,
       options: (json['options'] as List<dynamic>).map((option) => option as String).toList(),
       correctAnswer: json['correctAnswer'] as String,
-      selectedAnswer: json['selectedAnswer'] as String,
+      selectedAnswer: json['selectedAnswer'] ?? '',
     );
   }
 

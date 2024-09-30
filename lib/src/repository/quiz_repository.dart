@@ -13,7 +13,7 @@ class QuizRepository {
   }
 
   Future<void> createQuiz(Quiz quiz) async {
-    return _quizApi.createQuiz(quiz);
+    await _quizApi.createQuiz(quiz);
   }
 
   Future<void> updateQuiz(Quiz quiz) async {

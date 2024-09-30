@@ -23,8 +23,10 @@ class LocalStorageClient extends QuizClientInterface {
   static const kTodosCollectionKey = 'test_key';
 
   String? _getValue(String key) => _plugin.getString(key);
+
   Future<void> _setValue(String key, String value) {
-    return _plugin.setString(key, value);
+    var result = _plugin.setString(key, value);
+    return result;
   }
 
   void _init() {
